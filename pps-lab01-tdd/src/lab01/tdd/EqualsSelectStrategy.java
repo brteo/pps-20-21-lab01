@@ -1,9 +1,13 @@
 package lab01.tdd;
 
 public class EqualsSelectStrategy implements SelectStrategy {
-    private final int equalsTo;
+    private int equalsTo;
 
-    public EqualsSelectStrategy(final int equalsTo) {
+    public EqualsSelectStrategy(final int equalsTo){
+        this.setValue(equalsTo);
+    }
+
+    public void setValue(final int equalsTo) {
         this.equalsTo=equalsTo;
     }
 

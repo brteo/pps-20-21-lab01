@@ -1,7 +1,4 @@
-import lab01.tdd.CircularListImpl;
-import lab01.tdd.EqualsSelectStrategy;
-import lab01.tdd.EvenSelectStrategy;
-import lab01.tdd.MultipleOfSelectStrategy;
+import lab01.tdd.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * The test suite for testing the CircularList implementation
  */
 public class CircularListTest {
-    private final Integer ITEMS_NUMBERS = 5; // >=2
+    private final Integer ITEMS_NUMBERS = 5;
     private CircularListImpl list;
+    private final StrategyFactory strategyFactory = new StrategyFactoryImpl();
 
     private void addMultipleItems(Integer n){
         for (int i=1; i<=n; i++)
@@ -141,7 +139,7 @@ public class CircularListTest {
 
     @Test
     void nextEvenStrategy() {
-        list = new CircularListImpl(new EvenSelectStrategy());
+        list = new CircularListImpl(strategyFactory.createEvenStrategy());
 
         list.add(5);
         list.add(7);
@@ -153,7 +151,7 @@ public class CircularListTest {
 
     @Test
     void nextEvenStrategyEmpty() {
-        list = new CircularListImpl(new EvenSelectStrategy());
+        list = new CircularListImpl(strategyFactory.createEvenStrategy());
 
         list.add(5);
         list.add(7);
@@ -163,7 +161,7 @@ public class CircularListTest {
 
     @Test
     void nextMultipleStrategy() {
-        list = new CircularListImpl(new MultipleOfSelectStrategy(2));
+        list = new CircularListImpl(strategyFactory.createMultipleOfStrategy(2));
 
         list.add(1);
         list.add(2);
@@ -178,7 +176,7 @@ public class CircularListTest {
 
     @Test
     void nextMultipleStrategyEmpty() {
-        list = new CircularListImpl(new MultipleOfSelectStrategy(20));
+        list = new CircularListImpl(strategyFactory.createMultipleOfStrategy(20));
 
         list.add(1);
         list.add(3);
@@ -190,7 +188,7 @@ public class CircularListTest {
 
     @Test
     void nextEqualsStrategy() {
-        list = new CircularListImpl(new EqualsSelectStrategy(2));
+        list = new CircularListImpl(strategyFactory.createEqualsStrategy(2));
 
         list.add(1);
         list.add(2);
@@ -202,11 +200,32 @@ public class CircularListTest {
 
     @Test
     void nextEqualsStrategyEmpty() {
-        list = new CircularListImpl(new EqualsSelectStrategy(3));
+        list = new CircularListImpl(strategyFactory.createEqualsStrategy(3));
 
         list.add(1);
         list.add(2);
 
         assertEquals(Optional.empty(), list.next());
+    }
+
+    @Test
+    void nextMixedStrategy() {
+        list = new CircularListImpl();
+
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+
+        assertEquals(Optional.of(1), list.next());
+        assertEquals(Optional.of(2), list.next());
+
+        assertEquals(Optional.of(1), list.next(strategyFactory.createEqualsStrategy(1)));
+        assertEquals(Optional.of(4), list.next(strategyFactory.createEqualsStrategy(4)));
+
+        assertEquals(Optional.of(2), list.next(strategyFactory.createEvenStrategy()));
+
+        assertEquals(Optional.of(4), list.next(strategyFactory.createMultipleOfStrategy(4)));
     }
 }

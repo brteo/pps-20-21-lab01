@@ -7,11 +7,9 @@ import java.util.Optional;
 public class CircularListImpl implements CircularList{
     private List<Integer> list = new ArrayList<>();
     private Integer current = -1;
-    private SelectStrategy strategy;
+    private SelectStrategy strategy = new StrategyFactoryImpl().createDefaultStrategy();
 
-    public CircularListImpl(){
-        this(new DefaultSelectStrategy());
-    }
+    public CircularListImpl(){}
 
     public CircularListImpl(final SelectStrategy strategy){
         this.strategy = strategy;
