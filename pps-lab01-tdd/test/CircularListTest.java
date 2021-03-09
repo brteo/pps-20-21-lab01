@@ -1,4 +1,7 @@
 import lab01.tdd.CircularListImpl;
+import lab01.tdd.EqualsSelectStrategy;
+import lab01.tdd.EvenSelectStrategy;
+import lab01.tdd.MultipleOfSelectStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * The test suite for testing the CircularList implementation
  */
 public class CircularListTest {
-    private final Integer ITEMS_NUMBERS = 5;
+    private final Integer ITEMS_NUMBERS = 5; // >=2
     private CircularListImpl list;
 
     private void addMultipleItems(Integer n){
@@ -134,5 +137,76 @@ public class CircularListTest {
 
         list.reset();
         assertEquals(Optional.of(1), list.next());
+    }
+
+    @Test
+    void nextEvenStrategy() {
+        list = new CircularListImpl(new EvenSelectStrategy());
+
+        list.add(5);
+        list.add(7);
+        list.add(2);
+
+        assertEquals(Optional.of(2), list.next());
+        assertEquals(Optional.of(2), list.next());
+    }
+
+    @Test
+    void nextEvenStrategyEmpty() {
+        list = new CircularListImpl(new EvenSelectStrategy());
+
+        list.add(5);
+        list.add(7);
+
+        assertEquals(Optional.empty(), list.next());
+    }
+
+    @Test
+    void nextMultipleStrategy() {
+        list = new CircularListImpl(new MultipleOfSelectStrategy(2));
+
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(5);
+        list.add(10);
+
+        assertEquals(Optional.of(2), list.next());
+        assertEquals(Optional.of(10), list.next());
+        assertEquals(Optional.of(2), list.next());
+    }
+
+    @Test
+    void nextMultipleStrategyEmpty() {
+        list = new CircularListImpl(new MultipleOfSelectStrategy(20));
+
+        list.add(1);
+        list.add(3);
+        list.add(5);
+        list.add(10);
+
+        assertEquals(Optional.empty(), list.next());
+    }
+
+    @Test
+    void nextEqualsStrategy() {
+        list = new CircularListImpl(new EqualsSelectStrategy(2));
+
+        list.add(1);
+        list.add(2);
+        list.add(3);
+
+        assertEquals(Optional.of(2), list.next());
+        assertEquals(Optional.of(2), list.next());
+    }
+
+    @Test
+    void nextEqualsStrategyEmpty() {
+        list = new CircularListImpl(new EqualsSelectStrategy(3));
+
+        list.add(1);
+        list.add(2);
+
+        assertEquals(Optional.empty(), list.next());
     }
 }
